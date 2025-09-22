@@ -1,0 +1,30 @@
+paths:
+  /seed/tour-guides:
+    post:
+      tags:
+        - Seed
+      summary: Seed 10 users and 10 tour guides
+      description: Tạo 10 user và 10 tour guide gắn với từng user (dành cho dev/test).
+      operationId: seedTourGuides
+      responses:
+        '201':
+          description: Tạo thành công 10 user và 10 tour guide
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      $ref: '../components.yml#/components/schemas/User'
+                  tourGuides:
+                    type: array
+                    items:
+                      $ref: '../components.yml#/components/schemas/TourGuide'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '../components.yml#/components/schemas/Error'

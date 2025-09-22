@@ -1,6 +1,11 @@
 const httpStatus = require('http-status');
-const { User } = require('../models');
+const { User, TourGuide } = require('../models');
 const ApiError = require('../utils/ApiError');
+
+const deleteAllUserAndTourGuide = async () => {
+  await User.deleteMany({});
+  await TourGuide.deleteMany({});
+};
 
 /**
  * Create a user
@@ -86,4 +91,5 @@ module.exports = {
   getUserByEmail,
   updateUserById,
   deleteUserById,
+  deleteAllUserAndTourGuide,
 };

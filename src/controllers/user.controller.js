@@ -5,6 +5,8 @@ const catchAsync = require('../utils/catchAsync');
 const { userService } = require('../services');
 
 const createUser = catchAsync(async (req, res) => {
+  req.body.isEmailVerified = true; // Auto-verify email for admin-created users
+  req.body.country = 'vietnam';
   const user = await userService.createUser(req.body);
   res.status(httpStatus.CREATED).send(user);
 });

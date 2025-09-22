@@ -1,7 +1,12 @@
 const express = require('express');
+
 const authRoute = require('./auth.route');
 const userRoute = require('./user.route');
+const tourGuideRoute = require('./tour-guide.route');
+
+const aiRoute = require('./ai.route');
 const docsRoute = require('./docs.route');
+const seedRoute = require('./seed.route');
 const config = require('../../config/config');
 
 const router = express.Router();
@@ -14,6 +19,18 @@ const defaultRoutes = [
   {
     path: '/users',
     route: userRoute,
+  },
+  {
+    path: '/tour-guides',
+    route: tourGuideRoute,
+  },
+  {
+    path: '/ai',
+    route: aiRoute,
+  },
+  {
+    path: '/seed',
+    route: seedRoute,
   },
 ];
 

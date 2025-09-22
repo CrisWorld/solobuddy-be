@@ -23,6 +23,21 @@ const userSchema = mongoose.Schema(
         }
       },
     },
+    avatar: {
+      type: String,
+      default: 'https://www.svgrepo.com/show/452030/avatar-default.svg',
+    },
+    country: {
+      type: String,
+    },
+    phone: {
+      type: String,
+      validate(value) {
+        if (!validator.isMobilePhone(value)) {
+          throw new Error('Invalid phone number');
+        }
+      },
+    },
     password: {
       type: String,
       required: true,

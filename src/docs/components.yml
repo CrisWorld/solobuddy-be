@@ -39,6 +39,61 @@ components:
         refresh:
           $ref: '#/components/schemas/Token'
 
+    TourGuide:
+      type: object
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        bio:
+          type: string
+        pricePerDay:
+          type: number
+        location:
+          type: string
+        languages:
+          type: array
+          items:
+            type: string
+        experienceYears:
+          type: number
+        photos:
+          type: array
+          items:
+            type: string
+        vehicle:
+          type: string
+        specialties:
+          type: array
+          items:
+            type: string
+        availableDates:
+          type: array
+          items:
+            type: string
+        ratingAvg:
+          type: number
+        ratingCount:
+          type: number
+        isActive:
+          type: boolean
+      example:
+        id: 5ebac534954b54139806c112
+        userId: 5ebac534954b54139806c112
+        bio: Bio for tour guide 1
+        pricePerDay: 100
+        location: Hanoi
+        languages: [English]
+        experienceYears: 1
+        photos: []
+        vehicle: car
+        specialties: ["historical-tours"]
+        availableDates: []
+        ratingAvg: 0
+        ratingCount: 0
+        isActive: true
+
     Error:
       type: object
       properties:

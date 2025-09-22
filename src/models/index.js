@@ -1,2 +1,11 @@
 module.exports.Token = require('./token.model');
 module.exports.User = require('./user.model');
+module.exports.TourGuide = require('./tour-guide.model');
+module.exports.Tour = require('./tour.model');
+module.exports.Booking = require('./booking.model');
+module.exports.Review = require('./review.model');
+module.exports.Badge = require('./badge.model');
+module.exports.UserBadge = require('./user-badge.model');
+module.exports.Favourite = require('./favourite.model').Favourite;
+module.exports.TravelerGuideFavourite = require('./traveler-guide-favourite.model');
+module.exports.TourGuideFavourite = require('./tour-guide-favourite.model');
