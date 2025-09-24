@@ -8,17 +8,15 @@ const { queryTourGuides } = require('../services/tour-guide.service');
  * Returns: AI response (json)
  */
 const getAIResponse = catchAsync(async (req, res) => {
-  const { message } = req.body;
-  const messages = [
-    {
-      role: 'user',
-      parts: [{ text: message }],
-    },
-  ];
-  if (!messages || !Array.isArray(messages)) {
+  const { messages } = req.body;
+  const messagesMapping = messages.map((message) => ({
+    role: message.role,
+    parts: [{ text: message.text }],
+  }));
+  if (!messagesMapping || !Array.isArray(messagesMapping)) {
     return res.status(httpStatus.BAD_REQUEST).send({ message: 'messages is required and must be an array' });
   }
-  const aiResponse = await aiService.postAnswer(messages);
+  const aiResponse = await aiService.postAnswer(messagesMapping);
   const response = JSON.parse(aiResponse.candidates[0].content.parts[0].text);
   const filter = {};
   Object.keys(response.mongo_filter || {}).forEach((key) => {

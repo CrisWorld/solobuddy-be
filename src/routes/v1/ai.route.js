@@ -27,18 +27,13 @@ const router = express.Router();
  *                     role:
  *                       type: string
  *                       example: user
- *                     parts:
- *                       type: array
- *                       items:
- *                         type: object
- *                         properties:
- *                           text:
- *                             type: string
+ *                     text:
+ *                       type: string
+ *                       example: "Tôi muốn tìm hướng dẫn viên biết tiếng Anh ở Đà Nẵng."
  *           example:
  *             messages:
  *               - role: user
- *                 parts:
- *                   - text: "Tôi muốn tìm hướng dẫn viên biết tiếng Anh ở Đà Nẵng."
+ *                 text: "Tôi muốn tìm hướng dẫn viên biết tiếng Anh ở Đà Nẵng."
  *     responses:
  *       200:
  *         description: Kết quả trả về từ AI

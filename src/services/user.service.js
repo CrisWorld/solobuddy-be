@@ -39,7 +39,21 @@ const queryUsers = async (filter, options) => {
  * @returns {Promise<User>}
  */
 const getUserById = async (id) => {
-  return User.findById(id);
+  // get user and join tour guide
+  const user = User.aggregate([
+    {
+      $match: { _id: id },
+    },
+    {
+      $lookup: {
+        from: 'tourguides',
+        localField: '_id',
+        foreignField: 'userId',
+        as: 'tourGuides',
+      },
+    },
+  ]);
+  return user;
 };
 
 /**

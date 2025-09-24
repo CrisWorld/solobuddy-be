@@ -16,26 +16,37 @@ const queryTourGuides = async (filter, options) => {
     pipeline.push({ $match: baseFilter });
   }
 
-  // nếu có filter theo user.name thì join user
+  pipeline.push(
+    {
+      $lookup: {
+        from: 'users',
+        localField: 'userId',
+        foreignField: '_id',
+        as: 'user',
+      },
+    },
+    { $unwind: '$user' } // inner join
+  );
+
+  // nếu có filter theo user.name thì thêm điều kiện match
   if (filter['user.name']) {
     const regex = filter['user.name'].$regex || filter['user.name'];
-    pipeline.push(
-      {
-        $lookup: {
-          from: 'users', // collection user
-          localField: 'userId', // field trong tourGuide
-          foreignField: '_id',
-          as: 'user',
-        },
+    pipeline.push({
+      $match: {
+        'user.name': { $regex: regex, $options: 'i' },
       },
-      { $unwind: '$user' }, // inner join
-      {
-        $match: {
-          'user.name': { $regex: regex, $options: 'i' },
-        },
-      }
-    );
+    });
   }
+
+  // chỉ lấy name, email, phone của user, lấy hết của tour guide
+  pipeline.push({
+    $project: {
+      ...Object.fromEntries(Object.keys(TourGuide.schema.paths).map((key) => [key, 1])),
+      'user.name': 1,
+      'user.email': 1,
+      'user.phone': 1,
+    },
+  });
 
   // sort
   let sort = { createdAt: -1 };
@@ -79,7 +90,38 @@ const createTourGuide = async (tourGuideBody) => {
   return TourGuide.create(tourGuideBody);
 };
 
+const updateProfile = async (tourGuideId, updateBody) => {
+  // Chỉ cho phép update các trường sau
+  const allowedFields = [
+    'bio',
+    'pricePerDay',
+    'location',
+    'languages',
+    'experienceYears',
+    'photos',
+    'vehicle',
+    'specialties',
+    'favourites',
+  ];
+  const updateData = {};
+  allowedFields.forEach((field) => {
+    if (updateBody[field] !== undefined) updateData[field] = updateBody[field];
+  });
+  return TourGuide.findByIdAndUpdate(tourGuideId, updateData, { new: true });
+};
+
+const updateAvailableDates = async (tourGuideId, availableDates) => {
+  return TourGuide.findByIdAndUpdate(tourGuideId, { availableDates }, { new: true });
+};
+
+const updateWorkDays = async (tourGuideId, { isRecur, dayInWeek }) => {
+  return TourGuide.findByIdAndUpdate(tourGuideId, { isRecur, dayInWeek }, { new: true });
+};
+
 module.exports = {
   queryTourGuides,
   createTourGuide,
+  updateProfile,
+  updateAvailableDates,
+  updateWorkDays,
 };

@@ -24,10 +24,11 @@ const favourites = [
   'Yoga & Meditation',
 ];
 const languages = ['english', 'vietnamese', 'thai', 'french', 'spanish', 'chinese', 'japanese', 'korean'];
-
+const locations = ['vietnam', 'thailand', 'france', 'spain', 'china', 'japan', 'korea', 'usa', 'uk', 'germany'];
 module.exports = {
   vehicleTypes,
   specialtyTypes,
   favourites,
   languages,
+  locations,
 };

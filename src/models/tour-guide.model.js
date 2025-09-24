@@ -99,6 +99,19 @@ const tourGuideSchema = mongoose.Schema(
       type: [favouriteSchema],
       default: [],
     },
+    isRecur: {
+      type: Boolean,
+      default: false,
+    },
+    dayInWeek: {
+      type: [Number], // 0: Chủ nhật, 1: Thứ hai, ..., 6: Thứ bảy
+      default: [],
+      validate(value) {
+        if (!Array.isArray(value) || value.some((v) => v < 0 || v > 6)) {
+          throw new Error('dayInWeek must be an array of numbers from 0 to 6');
+        }
+      },
+    },
   },
   {
     timestamps: true,
