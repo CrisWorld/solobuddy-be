@@ -31,11 +31,19 @@ const queryTourGuides = async (filter, options) => {
   // nếu có filter theo user.name thì thêm điều kiện match
   if (filter['user.name']) {
     const regex = filter['user.name'].$regex || filter['user.name'];
-    pipeline.push({
-      $match: {
-        'user.name': { $regex: regex, $options: 'i' },
-      },
-    });
+    if (filter['user.name'].$regex) {
+      pipeline.push({
+        $match: {
+          'user.name': { $regex: regex, $options: 'i' },
+        },
+      });
+    } else {
+      pipeline.push({
+        $match: {
+          'user.name': filter['user.name'],
+        },
+      });
+    }
   }
 
   // chỉ lấy name, email, phone của user, lấy hết của tour guide
@@ -118,8 +126,13 @@ const updateWorkDays = async (tourGuideId, { isRecur, dayInWeek }) => {
   return TourGuide.findByIdAndUpdate(tourGuideId, { isRecur, dayInWeek }, { new: true });
 };
 
+const getById = async (id) => {
+  return TourGuide.findById(id);
+};
+
 module.exports = {
   queryTourGuides,
+  getById,
   createTourGuide,
   updateProfile,
   updateAvailableDates,

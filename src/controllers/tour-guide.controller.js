@@ -41,9 +41,9 @@ const updateProfile = catchAsync(async (req, res) => {
 
 // Chọn ngày rảnh (availableDates) - hỗ trợ thêm/xóa ngày, validate ngày xóa không trùng booking
 const updateAvailableDates = catchAsync(async (req, res) => {
-  const { tourGuideId } = req.user;
+  const { _id: tourGuideId } = req.user.tourGuides[0] || { _id: undefined }; // giả sử đã có auth, lấy từ JWT
   const { addDates = [], removeDates = [] } = req.body;
-
+  if (!tourGuideId) throw new ApiError(httpStatus.BAD_REQUEST, 'No tour guide found');
   // Kiểm tra các ngày xóa có bị trùng booking không
   let conflictDates = [];
   if (removeDates.length > 0) {
@@ -88,16 +88,29 @@ const updateAvailableDates = catchAsync(async (req, res) => {
  * Body: { isRecur: Boolean, dayInWeek: [Number] }
  */
 const updateWorkDays = catchAsync(async (req, res) => {
-  const { tourGuideId } = req.user;
+  const { _id: tourGuideId } = req.user.tourGuides[0] || { tourGuideId: undefined }; // giả sử đã có auth, lấy từ JWT
   const { isRecur, dayInWeek } = req.body;
-
-  // Validate dayInWeek
-  if (!Array.isArray(dayInWeek) || dayInWeek.some((v) => v < 0 || v > 6)) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'dayInWeek must be an array of numbers from 0 to 6');
-  }
+  if (!tourGuideId) throw new ApiError(httpStatus.BAD_REQUEST, 'No tour guide found');
 
   const updated = await tourGuideService.updateWorkDays(tourGuideId, { isRecur, dayInWeek });
   res.send(updated);
+});
+
+/**
+ * LIST /v1/tour-guides
+ * Query tour guides with filter and pagination
+ * Body: { filter: {}, options: {} }
+ */
+const listTourGuides = catchAsync(async (req, res) => {
+  const { filter = {}, options = {} } = req.body;
+  // Chuyển đổi filter sang dạng phù hợp cho queryTourGuides
+  const mongoFilter = {};
+  Object.keys(filter).forEach((field) => {
+    const { operator, value } = filter[field];
+    mongoFilter[field.replace('_', '.')] = { [operator]: value };
+  });
+  const result = await tourGuideService.queryTourGuides(mongoFilter, options);
+  res.status(httpStatus.OK).send(result);
 });
 
 module.exports = {
@@ -105,4 +118,5 @@ module.exports = {
   updateProfile,
   updateAvailableDates,
   updateWorkDays,
+  listTourGuides,
 };

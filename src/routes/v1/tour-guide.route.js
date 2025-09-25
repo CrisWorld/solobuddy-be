@@ -7,68 +7,6 @@
 
 /**
  * @swagger
- * /tour-guides:
- *   get:
- *     summary: Lấy danh sách tour guide (filter, phân trang)
- *     tags: [TourGuides]
- *     parameters:
- *       - in: query
- *         name: user.name
- *         schema:
- *           type: string
- *         description: Tên user
- *       - in: query
- *         name: location
- *         schema:
- *           type: string
- *       - in: query
- *         name: languages
- *         schema:
- *           type: string
- *       - in: query
- *         name: ratingAvg
- *         schema:
- *           type: number
- *       - in: query
- *         name: pricePerDay
- *         schema:
- *           type: number
- *       - in: query
- *         name: vehicle
- *         schema:
- *           type: string
- *       - in: query
- *         name: experienceYears
- *         schema:
- *           type: number
- *       - in: query
- *         name: specialties
- *         schema:
- *           type: string
- *       - in: query
- *         name: favourites.name
- *         schema:
- *           type: string
- *       - in: query
- *         name: sortBy
- *         schema:
- *           type: string
- *         description: Trường sắp xếp, ví dụ "createdAt:desc"
- *       - in: query
- *         name: limit
- *         schema:
- *           type: integer
- *       - in: query
- *         name: page
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Danh sách tour guide
- */
-
-/**
- * @swagger
  * /tour-guides/profile:
  *   patch:
  *     summary: Tour guide cập nhật thông tin profile
@@ -138,21 +76,6 @@
  *                 items:
  *                   type: string
  *                   format: date-time
- *               weeklyRecurring:
- *                 type: object
- *                 properties:
- *                   daysOfWeek:
- *                     type: array
- *                     items:
- *                       type: integer
- *                       minimum: 0
- *                       maximum: 6
- *                   from:
- *                     type: string
- *                     format: date
- *                   to:
- *                     type: string
- *                     format: date
  *     responses:
  *       200:
  *         description: Danh sách ngày rảnh đã cập nhật
@@ -188,6 +111,54 @@
  *         description: Ngày làm việc đã cập nhật
  */
 
+/**
+ * @swagger
+ * /tour-guides:
+ *   post:
+ *     summary: Lấy danh sách tour guide (filter nâng cao, phân trang)
+ *     tags: [TourGuides]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               filter:
+ *                 type: object
+ *                 additionalProperties:
+ *                   type: object
+ *                   properties:
+ *                     operator:
+ *                       type: string
+ *                       description: MongoDB operator
+ *                     value:
+ *                       description: Giá trị cho operator
+ *               options:
+ *                 type: object
+ *                 properties:
+ *                   sortBy:
+ *                     type: string
+ *                   limit:
+ *                     type: integer
+ *                   page:
+ *                     type: integer
+ *     responses:
+ *       200:
+ *         description: Danh sách tour guide
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 results:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/TourGuide'
+ *                 totalResults:
+ *                   type: integer
+ */
+
 const express = require('express');
 const auth = require('../../middlewares/auth');
 const validate = require('../../middlewares/validate');
@@ -195,8 +166,6 @@ const tourGuideController = require('../../controllers/tour-guide.controller');
 const tourGuideValidation = require('../../validations/tour-guide.validation');
 
 const router = express.Router();
-
-router.get('/', tourGuideController.getTourGuides);
 
 router.patch(
   '/profile',
@@ -217,6 +186,13 @@ router.patch(
   auth('updateTourGuide'),
   validate(tourGuideValidation.updateWorkDays),
   tourGuideController.updateWorkDays
+);
+
+router.post(
+  '/',
+  // auth('getTourGuides'), // Bỏ comment nếu cần bảo vệ
+  validate(tourGuideValidation.listTourGuides),
+  tourGuideController.listTourGuides
 );
 
 module.exports = router;

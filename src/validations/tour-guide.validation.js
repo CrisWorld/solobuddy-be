@@ -33,8 +33,20 @@ const updateWorkDays = {
   }),
 };
 
+const listTourGuides = {
+  body: Joi.object({
+    filter: Joi.object().pattern(Joi.string(), Joi.object().pattern(Joi.string(), Joi.any())),
+    options: Joi.object({
+      sortBy: Joi.string(),
+      limit: Joi.number().integer().min(1),
+      page: Joi.number().integer().min(1),
+    }),
+  }),
+};
+
 module.exports = {
   updateProfile,
   updateAvailableDates,
   updateWorkDays,
+  listTourGuides,
 };
