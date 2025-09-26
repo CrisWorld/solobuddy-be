@@ -2,7 +2,7 @@ const axios = require('axios');
 const config = require('../config/config');
 const ApiError = require('../utils/ApiError');
 // const { allowedOperators } = require('../utils/validate');
-const { specialtyTypes, vehicleTypes, favourites, languages } = require('../config/tour-guide');
+const { specialtyTypes, vehicleTypes, favourites, languages, countries } = require('../config/tour-guide');
 
 const textOp = {
   operator: {
@@ -74,6 +74,20 @@ const generateConfig = {
                       'indonesia',
                       'philippines',
                     ],
+                  },
+                },
+              },
+            },
+            'user.country': {
+              type: 'object',
+              description: 'Quốc gia của hướng dẫn viên',
+              properties: {
+                ...arrayOp,
+                value: {
+                  type: 'array',
+                  items: {
+                    type: 'string',
+                    enum: countries,
                   },
                 },
               },

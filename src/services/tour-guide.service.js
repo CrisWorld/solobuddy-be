@@ -11,6 +11,7 @@ const queryTourGuides = async (filter, options) => {
   // base filter (ngoại trừ user.name)
   const baseFilter = { ...filter };
   delete baseFilter['user.name'];
+  delete baseFilter['user.country'];
 
   if (Object.keys(baseFilter).length > 0) {
     pipeline.push({ $match: baseFilter });
@@ -46,13 +47,23 @@ const queryTourGuides = async (filter, options) => {
     }
   }
 
+  if (filter['user.country']) {
+    pipeline.push({
+      $match: {
+        'user.country': filter['user.country'],
+      },
+    });
+  }
+
   // chỉ lấy name, email, phone của user, lấy hết của tour guide
   pipeline.push({
     $project: {
       ...Object.fromEntries(Object.keys(TourGuide.schema.paths).map((key) => [key, 1])),
       'user.name': 1,
       'user.email': 1,
+      'user.country': 1,
       'user.phone': 1,
+      'user.avatar': 1,
     },
   });
 

@@ -4,6 +4,7 @@ const tourGuideService = require('../services/tour-guide.service');
 const catchAsync = require('../utils/catchAsync');
 const ApiError = require('../utils/ApiError');
 const Booking = require('../models/booking.model');
+const User = require('../models/user.model');
 
 /**
  * GET /v1/tour-guides
@@ -33,8 +34,18 @@ const getTourGuides = catchAsync(async (req, res) => {
 // Chỉnh sửa thông tin profile tour guide
 const updateProfile = catchAsync(async (req, res) => {
   const { _id: tourGuideId } = req.user.tourGuides[0] || { _id: undefined }; // giả sử đã có auth, lấy từ JWT
+  const userUpdate = {};
   if (!tourGuideId) throw new ApiError(httpStatus.BAD_REQUEST, 'No tour guide found');
   const updateBody = req.body;
+  if (updateBody.country) {
+    userUpdate.country = updateBody.country;
+    delete updateBody.country;
+  }
+  if (updateBody.phone) {
+    userUpdate.phone = updateBody.phone;
+    delete updateBody.phone;
+  }
+  await User.findByIdAndUpdate(req.user._id, userUpdate, { new: true });
   const updated = await tourGuideService.updateProfile(tourGuideId, updateBody);
   res.send(updated);
 });

@@ -1,11 +1,11 @@
 const Joi = require('joi');
-const { favourites, specialtyTypes, vehicleTypes, languages, locations } = require('../config/tour-guide');
+const { favourites, specialtyTypes, vehicleTypes, languages, countries } = require('../config/tour-guide');
 
 const updateProfile = {
   body: Joi.object({
     bio: Joi.string().allow(''),
     pricePerDay: Joi.number().min(0),
-    location: Joi.string().valid(...locations),
+    location: Joi.string(),
     languages: Joi.array().items(Joi.string().valid(...languages)),
     experienceYears: Joi.number().min(0),
     photos: Joi.array().items(Joi.string().uri()),
@@ -16,6 +16,7 @@ const updateProfile = {
         name: Joi.string().valid(...favourites),
       })
     ),
+    country: Joi.string().valid(...countries),
   }),
 };
 
