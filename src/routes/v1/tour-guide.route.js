@@ -194,7 +194,30 @@
  *       400:
  *         description: Dữ liệu không hợp lệ hoặc không tìm thấy tour guide
  */
-
+/**
+ * @swagger
+ * /tour-guides/detail/{id}:
+ *   get:
+ *     summary: Lấy chi tiết tour guide
+ *     description: Trả về thông tin chi tiết của một tour guide theo ID.
+ *     tags: [TourGuides]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Tour guide ID
+ *     responses:
+ *       200:
+ *         description: Thông tin chi tiết tour guide
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/TourGuide'
+ *       404:
+ *         description: Không tìm thấy tour guide
+ */
 const express = require('express');
 const auth = require('../../middlewares/auth');
 const validate = require('../../middlewares/validate');
@@ -209,6 +232,8 @@ router.patch(
   validate(tourGuideValidation.updateProfile),
   tourGuideController.updateProfile
 );
+
+router.get('/detail/:id', tourGuideController.getTourGuideDetail);
 
 router.patch(
   '/available-dates',

@@ -6,7 +6,7 @@ const ApiError = require('../utils/ApiError');
 const Booking = require('../models/booking.model');
 const User = require('../models/user.model');
 const tourService = require('../services/tour.service');
-const { Review, Tour, TourGuide } = require('../models');
+const { TourGuide } = require('../models');
 
 /**
  * GET /v1/tour-guides/:id
@@ -63,6 +63,14 @@ const updateProfile = catchAsync(async (req, res) => {
   if (updateBody.phone) {
     userUpdate.phone = updateBody.phone;
     delete updateBody.phone;
+  }
+  if (updateBody.name) {
+    userUpdate.name = updateBody.name;
+    delete updateBody.name;
+  }
+  if (updateBody.avatar) {
+    userUpdate.avatar = updateBody.avatar;
+    delete updateBody.avatar;
   }
   await User.findByIdAndUpdate(req.user._id, userUpdate, { new: true });
   const updated = await tourGuideService.updateProfile(tourGuideId, updateBody);
