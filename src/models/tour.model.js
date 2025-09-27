@@ -36,6 +36,11 @@ const tourSchema = mongoose.Schema(
       maxlength: 50,
       trim: true,
     },
+    deleted: {
+      type: Boolean,
+      default: false,
+      index: true,
+    },
   },
   {
     timestamps: { createdAt: true, updatedAt: false }, // chỉ có createdAt

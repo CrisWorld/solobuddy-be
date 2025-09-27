@@ -32,6 +32,11 @@ const bookingSchema = mongoose.Schema(
       enum: bookingStatuses,
       default: bookingStatuses[0],
     },
+    quanity: {
+      type: Number,
+      required: true,
+      min: 1,
+    },
     totalPrice: {
       type: mongoose.SchemaTypes.Decimal128,
       required: true,
@@ -52,6 +57,11 @@ const bookingSchema = mongoose.Schema(
     guideSnapshot: {
       id: mongoose.SchemaTypes.ObjectId,
       name: String,
+      email: String,
+      pricePerDay: Number,
+      phone: String,
+      country: String,
+      location: String,
     },
     travelerSnapshot: {
       id: mongoose.SchemaTypes.ObjectId,

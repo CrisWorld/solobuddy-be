@@ -1,4 +1,4 @@
-const tourUnit = ['person', 'group', 'day', 'hour'];
+const tourUnit = ['person'];
 module.exports = {
   tourUnit,
 };

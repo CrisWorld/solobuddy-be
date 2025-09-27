@@ -7,6 +7,9 @@ const tourGuideRoute = require('./tour-guide.route');
 const aiRoute = require('./ai.route');
 const docsRoute = require('./docs.route');
 const seedRoute = require('./seed.route');
+const tourRoute = require('./tour.route');
+const reviewRoute = require('./review.route');
+
 const config = require('../../config/config');
 
 const router = express.Router();
@@ -31,6 +34,14 @@ const defaultRoutes = [
   {
     path: '/seed',
     route: seedRoute,
+  },
+  {
+    path: '/tours',
+    route: tourRoute,
+  },
+  {
+    path: '/reviews',
+    route: reviewRoute,
   },
 ];
 

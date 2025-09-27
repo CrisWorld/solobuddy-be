@@ -1,5 +1,6 @@
 const Joi = require('joi');
 const { favourites, specialtyTypes, vehicleTypes, languages, countries } = require('../config/tour-guide');
+const { tourUnit } = require('../config/tour');
 
 const updateProfile = {
   body: Joi.object({
@@ -17,6 +18,7 @@ const updateProfile = {
       })
     ),
     country: Joi.string().valid(...countries),
+    phone: Joi.string(),
   }),
 };
 
@@ -45,9 +47,22 @@ const listTourGuides = {
   }),
 };
 
+const createTour = {
+  body: Joi.object().keys({
+    title: Joi.string().max(255).required(),
+    description: Joi.string().allow(''),
+    price: Joi.number().min(0).required(),
+    unit: Joi.string()
+      .valid(...tourUnit)
+      .required(),
+    duration: Joi.string().max(50),
+  }),
+};
+
 module.exports = {
   updateProfile,
   updateAvailableDates,
   updateWorkDays,
   listTourGuides,
+  createTour,
 };

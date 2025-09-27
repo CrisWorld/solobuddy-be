@@ -159,6 +159,42 @@
  *                   type: integer
  */
 
+/**
+ * @swagger
+ * /tour-guides/tour:
+ *   post:
+ *     summary: Tạo mới tour cho tour guide
+ *     tags: [TourGuides]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *               price:
+ *                 type: number
+ *               unit:
+ *                 type: string
+ *               duration:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Tour đã được tạo
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Tour'
+ *       400:
+ *         description: Dữ liệu không hợp lệ hoặc không tìm thấy tour guide
+ */
+
 const express = require('express');
 const auth = require('../../middlewares/auth');
 const validate = require('../../middlewares/validate');
@@ -194,5 +230,7 @@ router.post(
   validate(tourGuideValidation.listTourGuides),
   tourGuideController.listTourGuides
 );
+
+router.post('/tour', auth(), validate(tourGuideValidation.createTour), tourGuideController.createTour);
 
 module.exports = router;

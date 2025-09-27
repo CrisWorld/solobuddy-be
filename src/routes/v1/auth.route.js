@@ -54,8 +54,8 @@ module.exports = router;
  *                 description: At least one number and one letter
  *             example:
  *               name: fake name
- *               email: fake@example.com
- *               password: password1
+ *               email: tourguide1@example.com
+ *               password: Password123!
  *     responses:
  *       "201":
  *         description: Created

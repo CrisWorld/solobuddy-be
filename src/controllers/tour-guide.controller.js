@@ -5,6 +5,25 @@ const catchAsync = require('../utils/catchAsync');
 const ApiError = require('../utils/ApiError');
 const Booking = require('../models/booking.model');
 const User = require('../models/user.model');
+const tourService = require('../services/tour.service');
+const { Review, Tour, TourGuide } = require('../models');
+
+/**
+ * GET /v1/tour-guides/:id
+ * Lấy chi tiết tour guide, kèm user, 6 tour mới nhất, 6 review rating cao nhất (join booking, user)
+ */
+const getTourGuideDetail = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  // Lấy tour guide + user
+  const tourGuide = await TourGuide.findById(id).lean();
+  if (!tourGuide) throw new ApiError(httpStatus.NOT_FOUND, 'Tour guide not found');
+  const user = await User.findById(tourGuide.userId).select('name email phone country avatar').lean();
+
+  res.send({
+    ...tourGuide,
+    user,
+  });
+});
 
 /**
  * GET /v1/tour-guides
@@ -124,10 +143,20 @@ const listTourGuides = catchAsync(async (req, res) => {
   res.status(httpStatus.OK).send(result);
 });
 
+const createTour = catchAsync(async (req, res) => {
+  const { _id: guideId } = req.user.tourGuides[0] || { _id: undefined };
+  if (!guideId) throw new ApiError(httpStatus.BAD_REQUEST, 'No tour guide found');
+  const tourData = { ...req.body, guideId };
+  const tour = await tourService.createTour(tourData);
+  res.status(httpStatus.CREATED).send(tour);
+});
+
 module.exports = {
   getTourGuides,
   updateProfile,
   updateAvailableDates,
   updateWorkDays,
   listTourGuides,
+  createTour,
+  getTourGuideDetail,
 };
