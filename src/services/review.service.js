@@ -1,3 +1,4 @@
+const { Types } = require('mongoose');
 const httpStatus = require('http-status');
 const Review = require('../models/review.model');
 const Booking = require('../models/booking.model');
@@ -6,14 +7,14 @@ const ApiError = require('../utils/ApiError');
 const createReview = async (reviewBody, travelerId) => {
   // Kiểm tra bookingId tồn tại
   const booking = await Booking.findOne({
-    bookingId: reviewBody.bookingId,
-    travelerId,
+    _id: Types.ObjectId(reviewBody.bookingId),
+    travelerId: Types.ObjectId(travelerId),
   });
   if (!booking) throw new ApiError(httpStatus.NOT_FOUND, 'Booking not found');
   // Kiểm tra travelerId đã review chưa
   const existed = await Review.findOne({
-    bookingId: reviewBody.bookingId,
-    travelerId,
+    bookingId: Types.ObjectId(reviewBody.bookingId),
+    travelerId: Types.ObjectId(travelerId),
   });
   if (existed) throw new ApiError(httpStatus.BAD_REQUEST, 'You already reviewed this booking');
   // Tạo review
@@ -23,7 +24,7 @@ const createReview = async (reviewBody, travelerId) => {
 const getReviewsByGuide = async (guideId, options = {}) => {
   const { page = 1, limit = 10 } = options;
   const reviews = await Review.aggregate([
-    { $match: { guideId } },
+    { $match: { guideId: Types.ObjectId(guideId) } },
     {
       $lookup: {
         from: 'users', // collection name trong MongoDB

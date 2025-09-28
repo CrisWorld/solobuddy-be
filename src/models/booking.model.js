@@ -22,10 +22,13 @@ const bookingSchema = mongoose.Schema(
       required: true,
       index: true,
     },
-    bookingDate: {
+    fromDate: {
       type: Date,
       required: true,
-      default: Date.now,
+    },
+    toDate: {
+      type: Date,
+      required: true,
     },
     status: {
       type: String,
@@ -49,6 +52,7 @@ const bookingSchema = mongoose.Schema(
      * Snapshot fields để log lại thông tin có thể thay đổi theo thời gian
      */
     tourSnapshot: {
+      id: mongoose.SchemaTypes.ObjectId,
       title: String,
       price: Number,
       unit: String,

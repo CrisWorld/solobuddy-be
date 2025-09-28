@@ -12,6 +12,8 @@ const { authLimiter } = require('./middlewares/rateLimiter');
 const routes = require('./routes/v1');
 const { errorConverter, errorHandler } = require('./middlewares/error');
 const ApiError = require('./utils/ApiError');
+const stripe = require('./config/stripe');
+const { Booking } = require('./models');
 
 const app = express();
 
@@ -22,6 +24,27 @@ if (config.env !== 'test') {
 
 // set security HTTP headers
 app.use(helmet());
+
+// 🚨 Stripe webhook phải đặt trước express.json()
+app.post('/v1/bookings/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
+  let event;
+  try {
+    const sig = req.headers['stripe-signature'];
+    event = stripe.webhooks.constructEvent(req.body, sig, config.stripe.webhookSecret);
+  } catch (err) {
+    return res.sendStatus(400);
+  }
+
+  if (event.type === 'checkout.session.completed') {
+    const session = event.data.object;
+    const { bookingId } = session.metadata || {};
+    if (bookingId) {
+      await Booking.findByIdAndUpdate(bookingId, { status: 'pending' });
+    }
+  }
+
+  res.sendStatus(200);
+});
 
 // parse json request body
 app.use(express.json());

@@ -25,6 +25,9 @@ const envVarsSchema = Joi.object()
     EMAIL_FROM: Joi.string().description('the from field in the emails sent by the app'),
     GEMINI_API_URL: Joi.string().description('Gemini API URL'),
     GEMINI_API_KEY: Joi.string().description('Gemini API key'),
+    STRIPE_SECRET_KEY: Joi.string().description('Stripe secret key'),
+    FRONTEND_URL: Joi.string().description('Frontend URL'),
+    STRIPE_WEBHOOK_SECRET: Joi.string().description('Stripe webhook secret'),
   })
   .unknown();
 
@@ -66,5 +69,12 @@ module.exports = {
   gemini: {
     apiUrl: envVars.GEMINI_API_URL,
     apiKey: envVars.GEMINI_API_KEY,
+  },
+  stripe: {
+    secretKey: envVars.STRIPE_SECRET_KEY,
+    webhookSecret: envVars.STRIPE_WEBHOOK_SECRET,
+  },
+  frontend: {
+    url: envVars.FRONTEND_URL,
   },
 };

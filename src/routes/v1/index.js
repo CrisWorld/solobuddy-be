@@ -9,6 +9,7 @@ const docsRoute = require('./docs.route');
 const seedRoute = require('./seed.route');
 const tourRoute = require('./tour.route');
 const reviewRoute = require('./review.route');
+const bookingRoute = require('./booking.route');
 
 const config = require('../../config/config');
 
@@ -42,6 +43,10 @@ const defaultRoutes = [
   {
     path: '/reviews',
     route: reviewRoute,
+  },
+  {
+    path: '/bookings',
+    route: bookingRoute,
   },
 ];
 

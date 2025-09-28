@@ -28,7 +28,9 @@ const tourSchema = mongoose.Schema(
       set: (v) => mongoose.Types.Decimal128.fromString(v.toString()),
     },
     unit: {
-      type: tourUnit,
+      type: String,
+      enum: tourUnit,
+      required: true,
       trim: true,
     },
     duration: {

@@ -1,4 +1,4 @@
-const bookingStatuses = ['pending', 'confirmed', 'cancelled', 'completed'];
+const bookingStatuses = ['wait-payment', 'pending', 'confirmed', 'cancelled', 'completed'];
 module.exports = {
   bookingStatuses,
 };
