@@ -127,5 +127,5 @@ const router = express.Router();
 
 router
   .post('/', auth(), validate(bookingValidation.createBooking), bookingController.createBooking)
-  .get(auth(), bookingController.getBookings);
+  .get('/', auth(), bookingController.getBookings);
 module.exports = router;
