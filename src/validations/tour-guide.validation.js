@@ -52,6 +52,7 @@ const createTour = {
     title: Joi.string().max(255).required(),
     description: Joi.string().allow(''),
     price: Joi.number().min(0).required(),
+    image: Joi.string().uri(),
     unit: Joi.string()
       .valid(...tourUnit)
       .required(),

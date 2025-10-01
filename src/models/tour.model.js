@@ -16,6 +16,10 @@ const tourSchema = mongoose.Schema(
       trim: true,
       maxlength: 255,
     },
+    image: {
+      type: String,
+      trim: true,
+    },
     description: {
       type: String,
       trim: true,

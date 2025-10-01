@@ -28,6 +28,7 @@ const updateTour = {
     .keys({
       title: Joi.string().max(255),
       description: Joi.string().allow(''),
+      image: Joi.string().uri(),
       price: Joi.number().min(0),
       unit: Joi.string(),
       duration: Joi.string().max(50),
