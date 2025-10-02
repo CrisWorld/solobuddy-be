@@ -159,6 +159,12 @@ const createTour = catchAsync(async (req, res) => {
   res.status(httpStatus.CREATED).send(tour);
 });
 
+const getTourGuideBookedDates = catchAsync(async (req, res) => {
+  const { tourGuideId } = req.params;
+  const dates = await tourGuideService.getBookedDatesByTourGuide(tourGuideId);
+  res.send({ bookedDates: dates });
+});
+
 module.exports = {
   getTourGuides,
   updateProfile,
@@ -167,4 +173,5 @@ module.exports = {
   listTourGuides,
   createTour,
   getTourGuideDetail,
+  getTourGuideBookedDates,
 };

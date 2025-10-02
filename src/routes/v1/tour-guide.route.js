@@ -218,6 +218,40 @@
  *       404:
  *         description: Không tìm thấy tour guide
  */
+
+/**
+ * @swagger
+ * /tour-guides/booked-dates/{tourGuideId}:
+ *   get:
+ *     summary: Lấy danh sách các ngày đã được booking của tour guide
+ *     description: Trả về mảng các ngày đã được booking dựa vào lịch sử booking của tour guide.
+ *     tags: [TourGuides]
+ *     parameters:
+ *       - in: path
+ *         name: tourGuideId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID của tour guide
+ *     responses:
+ *       200:
+ *         description: Danh sách ngày đã booking
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 bookedDates:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                     format: date
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ *       404:
+ *         description: Không tìm thấy tour guide
+ */
+
 const express = require('express');
 const auth = require('../../middlewares/auth');
 const validate = require('../../middlewares/validate');
@@ -248,6 +282,8 @@ router.patch(
   validate(tourGuideValidation.updateWorkDays),
   tourGuideController.updateWorkDays
 );
+
+router.get('/booked-dates/:tourGuideId', tourGuideController.getTourGuideBookedDates);
 
 router.post(
   '/',

@@ -1,4 +1,7 @@
 // Service: Get list of tour guides with filter and pagination
+const dayjs = require('dayjs');
+const { bookingStatuses } = require('../config/booking');
+const Booking = require('../models/booking.model');
 const TourGuide = require('../models/tour-guide.model');
 
 const queryTourGuides = async (filter, options) => {
@@ -109,6 +112,29 @@ const createTourGuide = async (tourGuideBody) => {
   return TourGuide.create(tourGuideBody);
 };
 
+/**
+ * Get all booked dates for a tour guide
+ * @param {ObjectId} tourGuideId
+ * @returns {Promise<Date[]>}
+ */
+const getBookedDatesByTourGuide = async (tourGuideId) => {
+  const bookings = await Booking.find({
+    tourGuideId,
+    status: { $nin: [bookingStatuses[3], bookingStatuses[4]] },
+    fromDate: { $gt: new Date() },
+  });
+  const dates = [];
+  bookings.forEach((booking) => {
+    let current = dayjs(booking.fromDate);
+    const end = dayjs(booking.toDate);
+    while (current.isBefore(end) || current.isSame(end, 'day')) {
+      dates.push(current.toDate());
+      current = current.add(1, 'day');
+    }
+  });
+  return dates.sort((a, b) => new Date(a) - new Date(b));
+};
+
 const updateProfile = async (tourGuideId, updateBody) => {
   // Chỉ cho phép update các trường sau
   const allowedFields = [
@@ -148,4 +174,5 @@ module.exports = {
   updateProfile,
   updateAvailableDates,
   updateWorkDays,
+  getBookedDatesByTourGuide,
 };

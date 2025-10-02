@@ -3,6 +3,7 @@ const httpStatus = require('http-status');
 const Review = require('../models/review.model');
 const Booking = require('../models/booking.model');
 const ApiError = require('../utils/ApiError');
+const { TourGuide } = require('../models');
 
 const createReview = async (reviewBody, travelerId) => {
   // Kiểm tra bookingId tồn tại
@@ -10,6 +11,18 @@ const createReview = async (reviewBody, travelerId) => {
     _id: Types.ObjectId(reviewBody.bookingId),
     travelerId: Types.ObjectId(travelerId),
   });
+  const tourGuide = await TourGuide.findById(booking.tourGuideId);
+
+  if (tourGuide) {
+    const newRatingCount = (tourGuide.ratingCount || 0) + 1;
+    const newRatingAvg = ((tourGuide.ratingAvg || 0) * (tourGuide.ratingCount || 0) + reviewBody.rating) / newRatingCount;
+
+    await TourGuide.findByIdAndUpdate(booking.tourGuideId, {
+      $set: { ratingAvg: newRatingAvg },
+      $inc: { ratingCount: 1 },
+    });
+  }
+
   if (!booking) throw new ApiError(httpStatus.NOT_FOUND, 'Booking not found');
   // Kiểm tra travelerId đã review chưa
   const existed = await Review.findOne({

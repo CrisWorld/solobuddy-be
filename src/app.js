@@ -34,12 +34,25 @@ app.post('/v1/bookings/webhook', express.raw({ type: 'application/json' }), asyn
   } catch (err) {
     return res.sendStatus(400);
   }
-
+  const session = event.data.object;
+  const { bookingId } = session.metadata || {};
   if (event.type === 'checkout.session.completed') {
-    const session = event.data.object;
-    const { bookingId } = session.metadata || {};
     if (bookingId) {
       await Booking.findByIdAndUpdate(bookingId, { status: 'pending' });
+    }
+  }
+
+  // Session hết hạn
+  if (event.type === 'checkout.session.expired') {
+    if (bookingId) {
+      await Booking.findByIdAndDelete(bookingId);
+    }
+  }
+
+  // Thanh toán thất bại
+  if (event.type === 'checkout.session.async_payment_failed' || event.type === 'payment_intent.payment_failed') {
+    if (bookingId) {
+      await Booking.findByIdAndDelete(bookingId);
     }
   }
 

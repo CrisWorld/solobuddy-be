@@ -15,11 +15,11 @@ const createBooking = catchAsync(async (req, res) => {
     line_items: [
       {
         price_data: {
-          currency: 'usd',
+          currency: 'vnd',
           product_data: {
             name: `Booking: ${booking.tourSnapshot.title} with ${booking.guideSnapshot.name}`,
           },
-          unit_amount: Math.round(booking.totalPrice * 100),
+          unit_amount: Math.round(booking.totalPrice),
         },
         quantity: 1,
       },
