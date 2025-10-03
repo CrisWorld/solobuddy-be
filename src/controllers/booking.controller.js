@@ -65,6 +65,15 @@ const getBookings = catchAsync(async (req, res) => {
       },
     },
     { $unwind: '$tourGuide' },
+    {
+      $lookup: {
+        from: 'users',
+        localField: 'tourGuide.userId', // userId của tourGuide
+        foreignField: '_id',
+        as: 'tourGuideUser',
+      },
+    },
+    { $unwind: '$tourGuideUser' },
   ]).sort({ createdAt: -1 });
   res.send(bookings);
 });
