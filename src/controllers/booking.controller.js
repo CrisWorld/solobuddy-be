@@ -45,7 +45,27 @@ const getBookings = catchAsync(async (req, res) => {
   } else if (req.user.role === 'guide') {
     filter.tourGuideId = req.user._id;
   }
-  const bookings = await Booking.find(filter).sort({ createdAt: -1 });
+  const bookings = await Booking.aggregate([
+    { $match: filter },
+    {
+      $lookup: {
+        from: 'users',
+        localField: 'travelerId',
+        foreignField: '_id',
+        as: 'traveler',
+      },
+    },
+    { $unwind: '$traveler' },
+    {
+      $lookup: {
+        from: 'tourguides',
+        localField: 'tourGuideId',
+        foreignField: '_id',
+        as: 'tourGuide',
+      },
+    },
+    { $unwind: '$tourGuide' },
+  ]).sort({ createdAt: -1 });
   res.send(bookings);
 });
 

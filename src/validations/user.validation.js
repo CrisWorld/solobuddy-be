@@ -35,7 +35,6 @@ const updateUser = {
       country: Joi.string(),
       phone: Joi.string(),
       password: Joi.string().min(8).pattern(new RegExp('^(?=.*[a-zA-Z])(?=.*\\d).+$')),
-      role: Joi.string().valid('user', 'admin'),
     })
     .min(1),
 };
