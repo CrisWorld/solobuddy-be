@@ -43,7 +43,7 @@ const getBookings = catchAsync(async (req, res) => {
   if (req.user.role === 'user') {
     filter.travelerId = req.user._id;
   } else if (req.user.role === 'guide') {
-    filter.tourGuideId = req.user._id;
+    filter.tourGuideId = req.user.tourGuides[0]._id;
   }
   const bookings = await Booking.aggregate([
     { $match: filter },

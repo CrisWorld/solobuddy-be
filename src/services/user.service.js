@@ -72,7 +72,7 @@ const getUserByEmail = async (email) => {
  * @returns {Promise<User>}
  */
 const updateUserById = async (userId, updateBody) => {
-  return User.findByIdAndUpdate({ _id: userId }, updateBody);
+  return User.findByIdAndUpdate(userId, updateBody, { new: true });
 };
 
 /**
