@@ -132,6 +132,23 @@ const createBooking = async (bookingBody, travelerId, req) => {
   return booking;
 };
 
+const updateBookingStatus = async (bookingId, tourGuideId, status) => {
+  const booking = await Booking.findOne({ _id: bookingId, tourGuideId });
+  if (!booking) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Booking not found');
+  }
+  if (!['completed', 'cancelled', 'confirmed'].includes(status)) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid status');
+  }
+  if (booking.status === 'completed' || booking.status === 'cancelled') {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Booking has already been completed or cancelled');
+  }
+  booking.status = status;
+  await booking.save();
+  return booking;
+};
+
 module.exports = {
   createBooking,
+  updateBookingStatus,
 };

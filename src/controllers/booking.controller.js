@@ -78,7 +78,16 @@ const getBookings = catchAsync(async (req, res) => {
   res.send(bookings);
 });
 
+const updateBookingStatus = catchAsync(async (req, res) => {
+  const tourGuideId = req.user.tourGuides[0]._id;
+  const { bookingId } = req.params;
+  const { status } = req.body;
+  const booking = await bookingService.updateBookingStatus(bookingId, tourGuideId, status);
+  res.send(booking);
+});
+
 module.exports = {
   createBooking,
   getBookings,
+  updateBookingStatus,
 };

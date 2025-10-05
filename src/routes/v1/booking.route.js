@@ -97,6 +97,46 @@ const router = express.Router();
 
 /**
  * @swagger
+ * /bookings/{bookingId}/status:
+ *   patch:
+ *     summary: Tour guide cập nhật trạng thái booking sau khi hoàn thành tour
+ *     tags: [Bookings]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: bookingId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID của booking
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               status:
+ *                 type: string
+ *                 enum: [completed, cancelled]
+ *     responses:
+ *       200:
+ *         description: Booking đã được cập nhật trạng thái
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Booking'
+ *       400:
+ *         description: Trạng thái không hợp lệ
+ *       404:
+ *         description: Không tìm thấy booking
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ */
+
+/**
+ * @swagger
  * components:
  *   schemas:
  *     Booking:
@@ -128,4 +168,11 @@ const router = express.Router();
 router
   .post('/', auth(), validate(bookingValidation.createBooking), bookingController.createBooking)
   .get('/', auth(), bookingController.getBookings);
+
+router.patch(
+  '/:bookingId/status',
+  auth(),
+  validate(bookingValidation.updateBookingStatus),
+  bookingController.updateBookingStatus
+);
 module.exports = router;

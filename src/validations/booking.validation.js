@@ -10,6 +10,16 @@ const createBooking = {
   }),
 };
 
+const updateBookingStatus = {
+  params: Joi.object().keys({
+    bookingId: Joi.string().required(),
+  }),
+  body: Joi.object().keys({
+    status: Joi.string().valid('completed', 'cancelled', 'confirmed').required(),
+  }),
+};
+
 module.exports = {
   createBooking,
+  updateBookingStatus,
 };
