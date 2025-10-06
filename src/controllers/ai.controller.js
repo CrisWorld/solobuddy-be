@@ -26,9 +26,19 @@ const getAIResponse = catchAsync(async (req, res) => {
   });
   if (response.isNeededFindTourGuides) {
     const guides = await queryTourGuides(filter, {});
-    res.status(httpStatus.OK).send({ response, guides });
+    res.status(httpStatus.OK).send({
+      response: {
+        response_text: response.response_text,
+      },
+      guides,
+    });
   } else {
-    res.status(httpStatus.OK).send({ response, guides: [] });
+    res.status(httpStatus.OK).send({
+      response: {
+        response_text: response.response_text,
+      },
+      guides: [],
+    });
   }
 });
 
