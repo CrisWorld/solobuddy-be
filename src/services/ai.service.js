@@ -43,6 +43,11 @@ const generateConfig = {
     response_schema: {
       type: 'object',
       properties: {
+        isNeededFindTourGuides: {
+          type: 'boolean',
+          description:
+            'Đây là cờ để trigger gọi query vào database để lấy danh sách tour guide khi người dùng cần gọi hoặc có thể cần gợi ý',
+        },
         mongo_filter: {
           type: 'object',
           description: 'lọc dữ liệu tour guide',

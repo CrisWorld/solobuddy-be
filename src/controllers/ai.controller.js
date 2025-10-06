@@ -24,8 +24,12 @@ const getAIResponse = catchAsync(async (req, res) => {
       [response.mongo_filter[key].operator]: response.mongo_filter[key].value,
     };
   });
-  const guides = await queryTourGuides(filter, {});
-  res.status(httpStatus.OK).send({ response, guides });
+  if (response.isNeededFindTourGuides) {
+    const guides = await queryTourGuides(filter, {});
+    res.status(httpStatus.OK).send({ response, guides });
+  } else {
+    res.status(httpStatus.OK).send({ response, guides: [] });
+  }
 });
 
 module.exports = {
