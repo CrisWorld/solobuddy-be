@@ -14,6 +14,7 @@ const { errorConverter, errorHandler } = require('./middlewares/error');
 const ApiError = require('./utils/ApiError');
 const stripe = require('./config/stripe');
 const { Booking } = require('./models');
+const { emailService } = require('./services');
 
 const app = express();
 
@@ -39,6 +40,38 @@ app.post('/v1/bookings/webhook', express.raw({ type: 'application/json' }), asyn
   if (event.type === 'checkout.session.completed') {
     if (bookingId) {
       await Booking.findByIdAndUpdate(bookingId, { status: 'pending' });
+    }
+    const booking = await Booking.findById(bookingId);
+    if (booking) {
+      const subject = 'Bạn có booking mới trên SoloBuddy';
+      const text = `Xin chào ${booking.guideSnapshot.name}, bạn có booking mới từ ${booking.travelerSnapshot.name}.`;
+
+      const html = `
+    <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+      <h2 style="color: #2c3e50;">Bạn có booking mới trên <strong>SoloBuddy</strong>!</h2>
+      <p>Xin chào <b>${booking.guideSnapshot.name}</b>,</p>
+      <p>
+        Bạn vừa nhận được một booking mới từ 
+        <b>${booking.travelerSnapshot.name}</b> (<a href="mailto:${booking.travelerSnapshot.email}">${
+        booking.travelerSnapshot.email
+      }</a>)
+        cho tour "<b>${booking.tourSnapshot.title}</b>".
+      </p>
+      <p>
+        📅 Từ ngày: <b>${booking.fromDate.toLocaleDateString()}</b><br>
+        📅 Đến ngày: <b>${booking.toDate.toLocaleDateString()}</b><br>
+        💰 Tổng tiền: <b>${booking.totalPrice.toLocaleString('vi-VN', {
+          style: 'currency',
+          currency: 'VND',
+        })}</b>
+      </p>
+      <p>Vui lòng đăng nhập vào hệ thống <a href="https://solobuddy-fe.vercel.app/">SoloBuddy</a> để xem chi tiết.</p>
+      <hr>
+      <p style="font-size: 12px; color: #888;">Đây là email tự động, vui lòng không trả lời.</p>
+    </div>
+  `;
+
+      await emailService.sendEmail(booking.guideSnapshot.email, subject, text, html);
     }
   }
 

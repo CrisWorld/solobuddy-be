@@ -120,8 +120,8 @@ const createBooking = async (bookingBody, travelerId, req) => {
     },
     guideSnapshot: {
       id: tourGuideId,
-      name: guide.name,
-      email: guide.email,
+      name: guide.user.name,
+      email: guide.user.email,
       phone: guide.user.phone,
       country: guide.user.country,
       location: guide.location,
